@@ -2,6 +2,7 @@ package com.example.apara.geoquiz;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +16,10 @@ public class QuizActivity extends AppCompatActivity {
     private ImageButton mNextButton;
     private ImageButton mPreviousButton;
     private TextView mQuestionTextView;
-
+    private int mWrongAns;
+    private int mCorrectAns;
+    private static final String TAG = "QuizActivity";
+    private static final String KEY_INDEX = "index";
     private Question[] mQuestionBank = new Question[]{
             new Question(R.string.question_australia, true),
             new Question(R.string.question_oceans, true),
@@ -28,7 +32,11 @@ public class QuizActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_quiz);
+        if (savedInstanceState != null){
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        }
         mQuestionTextView = findViewById(R.id.question_text_view);
         mQuestionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +80,9 @@ public class QuizActivity extends AppCompatActivity {
         updateQuestion();
     }
     private void updateQuestion(){
-        if (mCurrentIndex == 0){
+        mTrueButton.setClickable(true);
+        mFalseButton.setClickable(true);
+        if (mCurrentIndex == 0) {
             mPreviousButton.setVisibility(View.INVISIBLE);
         }else {
             mPreviousButton.setVisibility(View.VISIBLE);
@@ -81,13 +91,58 @@ public class QuizActivity extends AppCompatActivity {
         mQuestionTextView.setText(question);
     }
     private void checkAnswer( boolean userPressedTrue){
+        mTrueButton.setClickable(false);
+        mFalseButton.setClickable(false);
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
         int messageResId;
         if (userPressedTrue == answerIsTrue){
             messageResId = R.string.correct_toast;
+            mCorrectAns++;
         }else {
             messageResId = R.string.incorrect_toast;
         }
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
+        if (mCurrentIndex == mQuestionBank.length - 1){
+                Toast.makeText(this, "Correct answers: " + (mCorrectAns * 100) / mQuestionBank.length  + "%",Toast.LENGTH_LONG).show();
+                mCorrectAns = 0;
+            }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart(Bundle) called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume(Bundle) called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause(Bundle) called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop(Bundle) called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy(Bundle) called");
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
     }
 }
