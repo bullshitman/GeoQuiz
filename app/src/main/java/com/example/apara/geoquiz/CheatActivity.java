@@ -20,6 +20,7 @@ public class CheatActivity extends AppCompatActivity {
         if (savedInstanceState != null){
             setAnswerShownResult(true);
         }
+
         setContentView(R.layout.activity_cheat);
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
         mAnswerTextView = findViewById(R.id.answer_text_view);
