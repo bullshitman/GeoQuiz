@@ -23,6 +23,7 @@ public class QuizActivity extends AppCompatActivity {
     private int mCorrectAns;
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
+    private static final String CHEAT_ENABLED = "cheating";
     private static final int REQUEST_CODE_CHEAT = 0;
     private boolean mIsCheater;
     private Question[] mQuestionBank = new Question[]{
@@ -55,6 +56,7 @@ public class QuizActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quiz);
         if (savedInstanceState != null){
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mIsCheater = savedInstanceState.getBoolean(CHEAT_ENABLED, false);
         }
         mQuestionTextView = findViewById(R.id.question_text_view);
         mQuestionTextView.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +120,8 @@ public class QuizActivity extends AppCompatActivity {
         }
         int question = mQuestionBank[mCurrentIndex].getTextResId();
         mQuestionTextView.setText(question);
+        mNextButton.setClickable(false);
+        mPreviousButton.setClickable(false);
     }
     private void checkAnswer( boolean userPressedTrue) {
         mTrueButton.setClickable(false);
@@ -135,6 +139,8 @@ public class QuizActivity extends AppCompatActivity {
             }
         }
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
+        mNextButton.setClickable(true);
+        mPreviousButton.setClickable(true);
         if (mCurrentIndex == mQuestionBank.length - 1) {
             Toast.makeText(this, "Correct answers: " + (mCorrectAns * 100) / mQuestionBank.length + "%", Toast.LENGTH_LONG).show();
             mCorrectAns = 0;
@@ -177,5 +183,6 @@ public class QuizActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+        savedInstanceState.putBoolean(CHEAT_ENABLED, mIsCheater);
     }
 }

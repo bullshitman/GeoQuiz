@@ -11,23 +11,26 @@ import android.widget.TextView;
 public class CheatActivity extends AppCompatActivity {
     public static final String EXTRA_ANSWER_IS_TRUE = "geoquiz.answer_is_true";
     public static final String EXTRA_ANSWER_SHOWN = "geoquiz.answer_shown";
+    private boolean mCheatEnabled = false;
     private boolean mAnswerIsTrue;
     private TextView mAnswerTextView;
     private Button mShowAnswerButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null){
-            setAnswerShownResult(true);
-        }
 
         setContentView(R.layout.activity_cheat);
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
         mAnswerTextView = findViewById(R.id.answer_text_view);
+        if (savedInstanceState != null){
+            setAnswerShownResult(mCheatEnabled = savedInstanceState.getBoolean("cheat_enabled"));
+            mAnswerTextView.setText(R.string.watching_you);
+        }
         mShowAnswerButton = findViewById(R.id.show_answer_button);
         mShowAnswerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mCheatEnabled = true;
                 if (mAnswerIsTrue){
                     mAnswerTextView.setText(R.string.true_button);
                 }else {
@@ -56,6 +59,6 @@ public class CheatActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putString("answerShown", EXTRA_ANSWER_SHOWN);
+        savedInstanceState.putBoolean("cheat_enabled", mCheatEnabled);
     }
 }
