@@ -1,20 +1,27 @@
 package com.example.apara.geoquiz;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.TextView;
 
 public class CheatActivity extends AppCompatActivity {
     public static final String EXTRA_ANSWER_IS_TRUE = "geoquiz.answer_is_true";
     public static final String EXTRA_ANSWER_SHOWN = "geoquiz.answer_shown";
+    public static int CHEAT_TIMES;
     private boolean mCheatEnabled = false;
     private boolean mAnswerIsTrue;
     private TextView mAnswerTextView;
     private Button mShowAnswerButton;
+    private TextView mApiLevel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +29,8 @@ public class CheatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cheat);
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
         mAnswerTextView = findViewById(R.id.answer_text_view);
+        mApiLevel = findViewById(R.id.api_level);
+
         if (savedInstanceState != null){
             setAnswerShownResult(mCheatEnabled = savedInstanceState.getBoolean("cheat_enabled"));
             mAnswerTextView.setText(R.string.watching_you);
@@ -37,6 +46,24 @@ public class CheatActivity extends AppCompatActivity {
                     mAnswerTextView.setText(R.string.false_button);
                 }
                 setAnswerShownResult(true);
+                String string = "Api level: " + Build.VERSION.SDK_INT;
+                mApiLevel.setText(string);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    int cx = mShowAnswerButton.getWidth() / 2;
+                    int cy = mShowAnswerButton.getHeight() / 2;
+                    float radius = mShowAnswerButton.getWidth();
+                    Animator anim = ViewAnimationUtils.createCircularReveal(mShowAnswerButton, cx, cy, radius, 0);
+                    ((Animator) anim).addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            mShowAnswerButton.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    anim.start();
+                }else{
+                    mShowAnswerButton.setVisibility(View.INVISIBLE);
+                    }
             }
         });
     }
@@ -44,6 +71,7 @@ public class CheatActivity extends AppCompatActivity {
     private void setAnswerShownResult(boolean isAnswerShown) {
         Intent data = new Intent();
         data.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
+        //data.putExtra()
         setResult(RESULT_OK, data);
     }
 
