@@ -98,7 +98,4 @@ public class CheatActivity extends AppCompatActivity {
         savedInstanceState.putBoolean("cheat_enabled", mCheatEnabled);
         savedInstanceState.putInt("cheat_times", mCheatCount);
     }
-    public static int countCheatTimes(Intent result){
-        return result.getIntExtra(CHEAT_TIMES, 0);
-    }
 }
