@@ -24,8 +24,10 @@ public class QuizActivity extends AppCompatActivity {
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
     private static final String CHEAT_ENABLED = "cheating";
+    private static final String CHEAT_COUNT = "cheat count";
     private static final int REQUEST_CODE_CHEAT = 0;
     private boolean mIsCheater;
+    private int mCheatCount;
     private Question[] mQuestionBank = new Question[]{
             new Question(R.string.question_australia, true),
             new Question(R.string.question_oceans, true),
@@ -57,6 +59,7 @@ public class QuizActivity extends AppCompatActivity {
         if (savedInstanceState != null){
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
             mIsCheater = savedInstanceState.getBoolean(CHEAT_ENABLED, false);
+            mCheatCount = savedInstanceState.getInt(CHEAT_COUNT, 0);
         }
         mQuestionTextView = findViewById(R.id.question_text_view);
         mQuestionTextView.setOnClickListener(new View.OnClickListener() {
@@ -184,5 +187,6 @@ public class QuizActivity extends AppCompatActivity {
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
         savedInstanceState.putBoolean(CHEAT_ENABLED, mIsCheater);
+        savedInstanceState.putInt(CHEAT_COUNT, mCheatCount);
     }
 }

@@ -17,4 +17,5 @@
     <string name="cheat_button">Cheat!</string>
     <string name="judgment_toast">Cheating is wrong.</string>
     <string name="watching_you">Busted!</string>
+    <string name="cheating_is_over">Cheating is over!</string>
 </resources>
